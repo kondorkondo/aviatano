@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://aviatano.site/'),
 
     'asset_url' => env('ASSET_URL'),
 
@@ -81,6 +81,9 @@ return [
     | to any of the locales which will be supported by the application.
     |
     */
+    
+    'currency' => 'Tshs',
+    'currency_symbol' => 'Tshs',
 
     'locale' => 'en',
 

@@ -3,7 +3,7 @@
 <div class="active" id="via-email">
     <form class="register-form row w-75" style="margin: 100px auto 0 auto; color: white !important;" action="/auth/register" method="post" name="registerForm" id="registerViaEmailForm">
         <h2>Register</h2>
-            <input type="hidden" name="country" id="countries" value="IN">
+            <input type="hidden" name="country" id="countries" value="tz">
             <input type="hidden" name="register_type" id="register_type" value="3">
             @csrf
             <div class="col-md-6 col-12">
@@ -71,14 +71,13 @@
                         </span>
                     </span>
                     <select class="form-select custom-select" id="currency" name="currency">
-                        <option selected value="₹">INR</option>
-                        <option value="$">USD</option>
+                        <option selected value="Tzs">Tshs</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-6 col-12">
                 <div class="input-group mb-3">
-                    <div class="niceCountryInputSelector" data-selectedcountry="IN" data-showspecial="false"
+                    <div class="niceCountryInputSelector" data-selectedcountry="tz" data-showspecial="false"
                         data-showflags="true" data-i18nall="All selected" data-i18nnofilter="No selection"
                         data-i18nfilter="Filter" data-onchangecallback="onChangeCallback">
                     </div>

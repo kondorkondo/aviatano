@@ -394,7 +394,7 @@
         </div>
     </div>
 
-    @include('include.game-header')
+    @include('include.header')
 
     <div class="custom-toaster">
         <div class="cashout-toaster1 ">
@@ -545,7 +545,7 @@
                                         <div class="column-2">
                                             <button
                                                 class="btn btn-transparent previous-history d-flex align-items-center mx-auto fw-normal">
-                                                {{ number_format($item->amount, 2) }}₹
+                                                {{ number_format($item->amount, 2) }}Tshs
                                             </button>
                                         </div>
                                         <div class="column-3">
@@ -555,7 +555,7 @@
 
                                         </div>
                                         <div class="column-4 fw-normal">
-                                            {{ number_format($item->amount * $item->cashout_multiplier, 2) }}₹
+                                            {{ number_format($item->amount * $item->cashout_multiplier, 2) }}Tshs
                                         </div>
                                     </div>
                                 @endforeach
@@ -688,16 +688,16 @@
                                     <div class="bets-opt-list">
                                         <button class="btn btn-secondary btn-sm bet-opt main_amount_btn"
                                             onclick="select_direct_bet_amount(this);"><span
-                                                class="amt">100</span><span class="currency">₹</span></button>
+                                                class="amt">100</span><span class="currency">Tshs</span></button>
                                         <button class="btn btn-secondary btn-sm bet-opt main_amount_btn"
                                             onclick="select_direct_bet_amount(this);"><span
-                                                class="amt">200</span><span class="currency">₹</span></button>
+                                                class="amt">200</span><span class="currency">Tshs</span></button>
                                         <button class="btn btn-secondary btn-sm bet-opt main_amount_btn"
                                             onclick="select_direct_bet_amount(this);"><span
-                                                class="amt">500</span><span class="currency">₹</span></button>
+                                                class="amt">500</span><span class="currency">Tshs</span></button>
                                         <button class="btn btn-secondary btn-sm bet-opt main_amount_btn"
                                             onclick="select_direct_bet_amount(this);"><span
-                                                class="amt">1000</span><span class="currency">₹</span></button>
+                                                class="amt">1000</span><span class="currency">Tshs</span></button>
                                     </div>
                                 </div>
                                 <div class="buttons-block" id="bet_button">
@@ -802,16 +802,16 @@
                                     <div class="bets-opt-list">
                                         <button class="btn btn-secondary btn-sm bet-opt extra_amount_btn"
                                             onclick="select_direct_bet_amount(this);"><span
-                                                class="amt">100</span><span class="currency">₹</span></button>
+                                                class="amt">100</span><span class="currency">Tshs</span></button>
                                         <button class="btn btn-secondary btn-sm bet-opt extra_amount_btn"
                                             onclick="select_direct_bet_amount(this);"><span
-                                                class="amt">200</span><span class="currency">₹</span></button>
+                                                class="amt">200</span><span class="currency">Tshs</span></button>
                                         <button class="btn btn-secondary btn-sm bet-opt extra_amount_btn"
                                             onclick="select_direct_bet_amount(this);"><span
-                                                class="amt">500</span><span class="currency">₹</span></button>
+                                                class="amt">500</span><span class="currency">Tshs</span></button>
                                         <button class="btn btn-secondary btn-sm bet-opt extra_amount_btn"
                                             onclick="select_direct_bet_amount(this);"><span
-                                                class="amt">1000</span><span class="currency">₹</span></button>
+                                                class="amt">1000</span><span class="currency">Tshs</span></button>
                                     </div>
                                 </div>
                                 <div class="buttons-block" id="bet_button">
@@ -901,15 +901,15 @@
                     <ul class="list-unstyled limit-rules">
                         <li class="list-group-item">
                             Minimum Bet:
-                            <span class="badge badge-success px-2 font-family-number">10 ₹ </span>
+                            <span class="badge badge-success px-2 font-family-number">10 Tshs </span>
                         </li>
                         <li class="list-group-item">
                             Maximum Bet:
-                            <span class="badge badge-success px-2 font-family-number">8000 ₹ </span>
+                            <span class="badge badge-success px-2 font-family-number">8000 Tshs </span>
                         </li>
                         <li class="list-group-item">
                             Maximum win for one bet:
-                            <span class="badge badge-success px-2 font-family-number">800000 ₹ </span>
+                            <span class="badge badge-success px-2 font-family-number">800000 Tshs </span>
                         </li>
                     </ul>
                 </div>
@@ -1115,7 +1115,6 @@
 
 
 
-    @include('include.footer')
     <!--====== Avatar Modal Start ======-->
     <div class="modal fade" id="avtar-modal" tabindex="-1" aria-labelledby="avtar-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">

@@ -2,13 +2,8 @@
 @section('content')
 <div class="main-container" style=" background-color: rgb(0, 35, 71);">
     <div class="collection-page d-none">
-        <!--====== Slider Start ======-->
-        <div class="owl-carousel owl-theme">
-            <div class="item"><img src="images/011.gif" class="w-100" /></div>
-            <div class="item"><img src="images/02.jpg" class="w-100" /></div>
-            <div class="item"><img src="images/03.jpg" class="w-100" /></div>
-        </div>
-        <!--====== Slider End ======-->
+
+
         <!--====== Game List Start ======-->
         <div class="container">
             <div class="title-bg1">
