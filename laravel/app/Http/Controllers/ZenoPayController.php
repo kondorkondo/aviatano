@@ -86,25 +86,6 @@ class ZenoPayController extends Controller
         return response()->json($result);
     }
 
-    /**
-     * Create test order (for testing/debugging)
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function createTestOrder(Request $request)
-    {
-        $orderData = $this->zenoPayService->prepareOrderData(
-            $request->input('user_id', 1),
-            $request->input('email', 'test@example.com'),
-            $request->input('name', 'Test User'),
-            $request->input('phone', '0744963858'),
-            $request->input('amount', 1000)
-        );
 
-        $result = $this->zenoPayService->createOrder($orderData);
-
-        return response()->json($result);
-    }
 }
 
