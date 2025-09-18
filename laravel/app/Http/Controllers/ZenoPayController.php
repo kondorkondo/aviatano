@@ -24,7 +24,7 @@ class ZenoPayController extends Controller
      */
     public function webhook(Request $request): Response
     {
-        // Log the incoming webhook for debugging
+        // Log 
         Log::info('ZenoPay Webhook Received', [
             'headers' => $request->headers->all(),
             'payload' => $request->all()
@@ -65,7 +65,7 @@ class ZenoPayController extends Controller
     }
 
     /**
-     * Check order status (for testing/debugging)
+     * Check order status 
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
