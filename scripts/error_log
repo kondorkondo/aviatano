@@ -1,0 +1,25 @@
+[21-Sep-2025 00:57:39 UTC] PHP Warning:  require_once(/home/egnohetd/aviatano.site/scriptsvendor/autoload.php): Failed to open stream: No such file or directory in /home/egnohetd/aviatano.site/scripts/create_test_user.php on line 3
+[21-Sep-2025 00:57:39 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/egnohetd/aviatano.site/scriptsvendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/egnohetd/aviatano.site/scripts/create_test_user.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/egnohetd/aviatano.site/scripts/create_test_user.php on line 3
+[21-Sep-2025 01:03:24 UTC] PHP Warning:  require_once(/home/egnohetd/aviatano.site/scriptsvendor/autoload.php): Failed to open stream: No such file or directory in /home/egnohetd/aviatano.site/scripts/create_test_user.php on line 3
+[21-Sep-2025 01:03:24 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/egnohetd/aviatano.site/scriptsvendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/egnohetd/aviatano.site/scripts/create_test_user.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/egnohetd/aviatano.site/scripts/create_test_user.php on line 3
+[21-Sep-2025 01:05:08 UTC] PHP Warning:  require_once(/home/egnohetd/aviatano.site/scripts../vendor/autoload.php): Failed to open stream: No such file or directory in /home/egnohetd/aviatano.site/scripts/create_test_user.php on line 3
+[21-Sep-2025 01:05:08 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/egnohetd/aviatano.site/scripts../vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/egnohetd/aviatano.site/scripts/create_test_user.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/egnohetd/aviatano.site/scripts/create_test_user.php on line 3
+[21-Sep-2025 17:59:49 UTC] PHP Warning:  require(/home/egnohetd/aviatano.site/scripts/vendor/autoload.php): Failed to open stream: No such file or directory in /home/egnohetd/aviatano.site/scripts/update_currency.php on line 3
+[21-Sep-2025 17:59:49 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/egnohetd/aviatano.site/scripts/vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/egnohetd/aviatano.site/scripts/update_currency.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/egnohetd/aviatano.site/scripts/update_currency.php on line 3
+[21-Sep-2025 18:01:58 UTC] PHP Warning:  require(/home/egnohetd/aviatano.site/scripts/vendor/autoload.php): Failed to open stream: No such file or directory in /home/egnohetd/aviatano.site/scripts/update_currency.php on line 3
+[21-Sep-2025 18:01:58 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/egnohetd/aviatano.site/scripts/vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/egnohetd/aviatano.site/scripts/update_currency.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/egnohetd/aviatano.site/scripts/update_currency.php on line 3

@@ -211,6 +211,54 @@ function deposit(id) {
         $(".pay-static-form").show();
     }
     
+    if (id == 10) {
+        // Mobile Money Tanzania
+        amount = $("#mobile_money_amount").val();
+        min_amount = 1000;
+        max_amount = 100000;
+        error_id = "#mobile_money_amount-error";
+
+        //Title
+        $("#mobile_title").text("MOBILE NUMBER");
+        $("#name_title").text("FULL NAME");
+        $("#mobile_number_title").text("MOBILE NUMBER");
+
+        // Hide
+        array_to_hide = [
+            'email_div',
+            'cwallet_div',
+            'ctxt_div',
+            'account_no_div',
+            'account_holder_name_div',
+            'ifsc_code_div',
+            'bank_name_div',
+            'account_number_tag',
+            'bank_name_tag',
+            'upi_div',
+            'utr_div'
+        ]
+        hide_field(array_to_hide);
+
+        // Show
+        arr_to_show = [
+            'mobile_div',
+            'name_div',
+            'mobile_number_tag'
+        ]
+        show_field(arr_to_show)
+
+        arr_to_show = [
+            'mobile_no',
+            'name'
+        ]
+        show_field(arr_to_show)
+
+        $(".deposite-box").hide();
+        $("#mobile_money").show();
+        $(".pay-options").hide();
+        $(".pay-static-form").show();
+    }
+    
     // Set Amount
     $("#deposit_amount").val(amount);
     $("#select_amount").text(amount);
@@ -536,3 +584,119 @@ function paymentGatewayDetails(id) {
         }
     })
 }
+
+// Mobile Money Tanzania specific functions
+function selectAmount(amount) {
+    $("#mobile_money_amount").val(amount);
+    $("#mobile_money_amount_txt").text(amount);
+}
+
+// Update mobile money amount display when user types
+$(document).ready(function() {
+    $("#mobile_money_amount").on('input', function() {
+        var amount = $(this).val();
+        $("#mobile_money_amount_txt").text(amount);
+    });
+    
+    // Auto-select mobile money payment method on page load
+    setTimeout(function() {
+        if (typeof paymentGatewayDetails === 'function') {
+            paymentGatewayDetails('10'); // Mobile money gateway ID
+        }
+    }, 500);
+    
+    // Handle form submission for mobile money
+    $("#deposit_form").on('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form data
+        var amount = $("#mobile_money_amount").val();
+        var mobileNo = $("#mobile_money_phone").val();
+        var paymentGatewayType = '10'; // Mobile money gateway ID
+        
+        // Validate required fields
+        if (!amount || amount === '') {
+            toastr.error("Please enter an amount");
+            return false;
+        }
+        
+        if (!mobileNo || mobileNo === '') {
+            toastr.error("Please enter your mobile number");
+            return false;
+        }
+        
+        // Validate amount range
+        var amountNum = parseFloat(amount);
+        if (amountNum < 1000) {
+            toastr.error("Minimum amount is 1000 TSh");
+            return false;
+        }
+        
+        if (amountNum > 100000) {
+            toastr.error("Maximum amount is 100000 TSh");
+            return false;
+        }
+        
+        // Validate mobile number format (Tanzanian)
+        if (!mobileNo.match(/^0[6-7][0-9]{8}$/)) {
+            toastr.error("Please enter a valid Tanzanian mobile number (e.g., 0746341778)");
+            return false;
+        }
+        
+        // Set form values
+        $("#deposit_amount").val(amount);
+        $("#payment_gateway_type").val(paymentGatewayType);
+        $("#mobile_no").val(mobileNo);
+        $("#min_deposit_amount").val('1000');
+        $("#max_deposit_amount").val('100000');
+        
+        // Show loading state
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.text();
+        submitBtn.prop('disabled', true).text('Processing...');
+        
+        // Submit form via AJAX
+        $.ajax({
+            url: '/depositNow',
+            type: 'POST',
+            data: $(this).serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                // Reset button
+                submitBtn.prop('disabled', false).text(originalText);
+                
+                // Handle success response
+                if (response.includes('Success') || response.includes('mobile money payment initiated')) {
+                    toastr.success("Mobile money payment initiated successfully! Please complete the payment on your mobile device.");
+                    
+                    // Redirect to deposit page with success message
+                    setTimeout(function() {
+                        window.location.href = '/deposit?msg=Mobile money payment initiated successfully';
+                    }, 2000);
+                } else {
+                    toastr.error("Payment initialization failed. Please try again.");
+                }
+            },
+            error: function(xhr, status, error) {
+                // Reset button
+                submitBtn.prop('disabled', false).text(originalText);
+                
+                // Handle error response
+                if (xhr.responseText) {
+                    try {
+                        var errorData = JSON.parse(xhr.responseText);
+                        toastr.error(errorData.message || "Payment initialization failed");
+                    } catch (e) {
+                        toastr.error("Payment initialization failed. Please try again.");
+                    }
+                } else {
+                    toastr.error("Payment initialization failed. Please try again.");
+                }
+            }
+        });
+        
+        return false;
+    });
+});

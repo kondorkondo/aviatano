@@ -3,11 +3,11 @@
 
 function onChangeCallback(ctr){
     var country = $("#countries").val(ctr);
-    if (ctr == 'IN') {
-        $("#currency option").removeAttr('selected').filter('[value=1]').attr('selected', true);
-        $(".styledSelect").text('INR');
+    if (ctr == 'TZ') {
+        $("#currency option").removeAttr('selected').filter('[value=TSh]').attr('selected', true);
+        $(".styledSelect").text('TSh');
     } else {
-        $("#currency option").removeAttr('selected').filter('[value=2]').attr('selected', true);
+        $("#currency option").removeAttr('selected').filter('[value=$]').attr('selected', true);
         $(".styledSelect").text('USD');
     }
 }
