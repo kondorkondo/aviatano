@@ -12,8 +12,9 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-    'zenopay/callback',
-    'api/zenopay/callback'        //
+        'api/zenopay/webhook',
+        'zenopay/webhook',
+        '/api/zenopay/webhook',       //
     ];
     
 

@@ -1,20 +1,5 @@
 <?php
                     
-//         define('DB_SERVER', 'localhost');
-// define('DB_USERNAME', 'seekosoft_adbanaouser');
-// define('DB_PASSWORD', 'seekosoft_adbanaouser@11');
-// define('DB_NAME', 'seekosoft_adbanao');
-// // Try connecting to the Database
-// $conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-
-// //Check the connection
-// if($conn == false){
-//     dir('Error: Cannot connect');
-// }
-// $sql3 = "SELECT value FROM emredperiod WHERE category=game_between_time_end and id='14'";
-// $result3 =$conn->query($sql3);
-// $row3 = mysqli_fetch_assoc($result3);
-// @$period=$row3['value'];
 
 
 namespace App\Http\Controllers;
@@ -185,30 +170,130 @@ class Gamesetting extends Controller
         $userbets = Userbit::where("userid", $userid)->where('status',1)->where('created_at', '>=', Carbon::today()->toDateString())->orderBy('id','desc')->get();
         return response()->json($userbets);
     }
-	public function cashout(Request $r){
-		$game_id = $r->game_id;
-		$bet_id = $r->bet_id;
-		$win_multiplier = $r->win_multiplier;
-		$cash_out_amount = 0;
-		$status = false;
-        $message = "";
-        $data = array();
-		$result = resultbyid($game_id) == 0 ? $win_multiplier : resultbyid($game_id);
-		if(floatval($result) <= 1.20){
-			$result = 0;
-		}
-		$cash_out_amount = floatval(userbetdetail($bet_id,'amount'))*floatval($result);
-		addwallet(user('id'),$cash_out_amount); 
-		$data = array(
-                    "wallet_balance" => wallet(user('id'),"num"),
-                    "cash_out_amount" => $cash_out_amount
-                );
-        Userbit::where('id', $bet_id)->update(["status"=> 1,"cashout_multiplier"=>$win_multiplier]);
-        $status = true;
-		$response = array("isSuccess" => $status, "data" => $data, "message" => $message);
-        return response()->json($response);
-	}
-	
+public function cashout(Request $r)
+{
+    \Log::info('=== CASHOUT ATTEMPT ===', $r->all());
+    
+    try {
+        $userid = user('id');
+        $game_id = $r->game_id;
+        $bet_id = $r->bet_id;
+        $win_multiplier = $r->win_multiplier;
+        
+        // Validate inputs
+        if (!$userid || !$game_id || !$bet_id || !$win_multiplier) {
+            return response()->json([
+                "isSuccess" => false, 
+                "message" => "Missing required parameters"
+            ]);
+        }
+        
+        // Start database transaction
+        \DB::beginTransaction();
+        
+        // Get the bet with lock to prevent double cashout
+        $bet = \DB::table('userbits')
+            ->where('id', $bet_id)
+            ->where('userid', $userid)
+            ->where('status', 0) // Only active bets
+            ->lockForUpdate()
+            ->first();
+            
+        if (!$bet) {
+            \DB::rollBack();
+            \Log::error('Cashout failed: Bet not found or already cashed out', [
+                'user_id' => $userid,
+                'bet_id' => $bet_id
+            ]);
+            return response()->json([
+                "isSuccess" => false, 
+                "message" => "Bet not found or already cashed out"
+            ]);
+        }
+        
+        // Calculate win amount
+        $cash_out_amount = floatval($bet->amount) * floatval($win_multiplier);
+        
+        \Log::info('Cashout calculation', [
+            'bet_amount' => $bet->amount,
+            'multiplier' => $win_multiplier,
+            'win_amount' => $cash_out_amount
+        ]);
+        
+        // Update bet status and cashout multiplier
+        $updateBet = \DB::table('userbits')
+            ->where('id', $bet_id)
+            ->update([
+                "status" => 1,
+                "cashout_multiplier" => $win_multiplier,
+                "updated_at" => now()
+            ]);
+            
+        if (!$updateBet) {
+            \DB::rollBack();
+            \Log::error('Cashout failed: Could not update bet status');
+            return response()->json([
+                "isSuccess" => false, 
+                "message" => "Cashout failed - bet update error"
+            ]);
+        }
+        
+        // Add winnings to wallet
+        $walletUpdated = addwallet($userid, $cash_out_amount);
+        
+        if (!$walletUpdated) {
+            \DB::rollBack();
+            \Log::error('Cashout failed: Could not update wallet');
+            return response()->json([
+                "isSuccess" => false, 
+                "message" => "Cashout failed - wallet update error"
+            ]);
+        }
+        
+        // Record transaction
+        \DB::table('transactions')->insert([
+            'userid' => $userid,
+            'type' => 'credit',
+            'amount' => $cash_out_amount,
+            'category' => 'game_win',
+            'remark' => 'Cashout win - Bet ID: ' . $bet_id . ' at ' . $win_multiplier . 'x',
+            'status' => '1',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        
+        \DB::commit();
+        
+        \Log::info('Cashout successful', [
+            'user_id' => $userid,
+            'bet_id' => $bet_id,
+            'win_amount' => $cash_out_amount,
+            'multiplier' => $win_multiplier
+        ]);
+        
+        $data = array(
+            "wallet_balance" => wallet($userid, "num"),
+            "cash_out_amount" => $cash_out_amount
+        );
+        
+        return response()->json([
+            "isSuccess" => true, 
+            "data" => $data, 
+            "message" => "Cashout successful! +" . $cash_out_amount . " TZS"
+        ]);
+        
+    } catch (\Exception $e) {
+        \DB::rollBack();
+        \Log::error('Cashout Exception', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return response()->json([
+            "isSuccess" => false, 
+            "message" => "Cashout failed: " . $e->getMessage()
+        ]);
+    }
+}	
 	public function cronjob(){
 	    //0 = Game end & statrting soon
 	    //1 = Game start & and is in proccess

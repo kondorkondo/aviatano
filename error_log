@@ -18,3 +18,17 @@ Stack trace:
 [24-Sep-2025 02:02:29 Africa/Nairobi] PHP Fatal error:  Cannot redeclare App\Services\ZenoPayService::checkOrderStatus() in /home/egnohetd/aviatano.site/app/Services/ZenoPayService.php on line 247
 [24-Sep-2025 02:02:41 Africa/Nairobi] PHP Fatal error:  Cannot redeclare App\Services\ZenoPayService::checkOrderStatus() in /home/egnohetd/aviatano.site/app/Services/ZenoPayService.php on line 247
 [24-Sep-2025 02:05:54 Africa/Nairobi] PHP Fatal error:  Cannot declare class App\Models\Transaction, because the name is already in use in /home/egnohetd/aviatano.site/app/Models/Transaction.php on line 9
+[24-Sep-2025 09:48:04 Africa/Nairobi] PHP Fatal error:  Cannot declare class App\Models\Transaction, because the name is already in use in /home/egnohetd/aviatano.site/app/Models/Transaction.php on line 9
+[24-Sep-2025 10:11:07 Africa/Nairobi] PHP Fatal error:  Cannot declare class App\Models\Transaction, because the name is already in use in /home/egnohetd/aviatano.site/app/Models/Transaction.php on line 9
+[24-Sep-2025 13:36:48 Africa/Nairobi] PHP Fatal error:  Cannot declare class App\Models\Transaction, because the name is already in use in /home/egnohetd/aviatano.site/app/Models/Transaction.php on line 9
+[24-Sep-2025 13:47:56 Africa/Nairobi] PHP Fatal error:  Cannot declare class App\Models\Transaction, because the name is already in use in /home/egnohetd/aviatano.site/app/Models/Transaction.php on line 9
+[24-Sep-2025 13:49:06 Africa/Nairobi] PHP Fatal error:  Cannot declare class App\Models\Transaction, because the name is already in use in /home/egnohetd/aviatano.site/app/Models/Transaction.php on line 9
+[24-Sep-2025 14:20:11 Africa/Nairobi] PHP Fatal error:  Cannot declare class App\Models\Transaction, because the name is already in use in /home/egnohetd/aviatano.site/app/Models/Transaction.php on line 9
+[25-Sep-2025 00:11:14 UTC] PHP Fatal error:  Cannot redeclare addwallet() (previously declared in /home/egnohetd/aviatano.site/app/Helper.php:117) in /home/egnohetd/aviatano.site/app/Helper.php on line 217
+[25-Sep-2025 03:42:51 Africa/Nairobi] PHP Fatal error:  Cannot declare class App\Models\Transaction, because the name is already in use in /home/egnohetd/aviatano.site/app/Models/Transaction.php on line 9
+[25-Sep-2025 18:07:59 Africa/Nairobi] PHP Fatal error:  Cannot declare class App\Models\Transaction, because the name is already in use in /home/egnohetd/aviatano.site/app/Models/Transaction.php on line 9
+[25-Sep-2025 22:01:37 UTC] PHP Fatal error:  Cannot redeclare processZenoPaySuccess() (previously declared in /home/egnohetd/aviatano.site/app/Helper.php:264) in /home/egnohetd/aviatano.site/app/Helpers/paymentHelpers.php on line 8
+[25-Sep-2025 22:01:37 UTC] PHP Fatal error:  Cannot redeclare processZenoPaySuccess() (previously declared in /home/egnohetd/aviatano.site/app/Helper.php:264) in /home/egnohetd/aviatano.site/app/Helpers/paymentHelpers.php on line 8
+[26-Sep-2025 02:10:57 UTC] PHP Fatal error:  Cannot redeclare addwallet() (previously declared in /home/egnohetd/aviatano.site/app/Helper.php:126) in /home/egnohetd/aviatano.site/app/Helper.php on line 348
+[26-Sep-2025 02:11:36 UTC] PHP Fatal error:  Cannot redeclare addwallet() (previously declared in /home/egnohetd/aviatano.site/app/Helper.php:126) in /home/egnohetd/aviatano.site/app/Helper.php on line 348
+[26-Sep-2025 02:11:36 UTC] PHP Fatal error:  Cannot redeclare addwallet() (previously declared in /home/egnohetd/aviatano.site/app/Helper.php:126) in /home/egnohetd/aviatano.site/app/Helper.php on line 348

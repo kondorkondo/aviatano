@@ -8,6 +8,7 @@ use App\Models\Wallet;
 use App\Models\Userbit;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 function imageupload($file, $name, $path)
 {
@@ -29,6 +30,7 @@ function imageupload($file, $name, $path)
         'filePath' => $filePath,
     ];
 }
+
 function datealgebra($date, $operator, $value, $format = "Y-m-d")
 {
     if ($operator == "-") {
@@ -41,6 +43,7 @@ function datealgebra($date, $operator, $value, $format = "Y-m-d")
         return date_format($date, $format);
     }
 }
+
 function user($parameter,$id=null)
 {
     if ($id == null) {
@@ -51,15 +54,18 @@ function user($parameter,$id=null)
     }
     // return session()->get('userlogin')[$parameter];
 }
+
 function userdetail($id, $parameter)
 {
     $data = User::where('id', $id)->first();
     //return $data->{$parameter};
 }
+
 function admin($parameter)
 {
     return session()->get('adminlogin')[$parameter];
 }
+
 function wallet($userid, $type = "string")
 {
     $amount = Wallet::where('userid', $userid)->first();
@@ -73,6 +79,7 @@ function wallet($userid, $type = "string")
         return 0;
     }
 }
+
 function setting($parameter)
 {
     $setting = Setting::where('category', $parameter)->first();
@@ -88,6 +95,7 @@ function currentid()
         return 0;
     }
 }
+
 function dformat($date, $format)
 {
     $strd = date_create($date);
@@ -96,6 +104,7 @@ function dformat($date, $format)
     // }
     return date_format($strd, $format);
 }
+
 function resultbyid($id)
 {
     $data = Gameresult::where('id', $id)->first();
@@ -104,6 +113,7 @@ function resultbyid($id)
     }
     return 0;
 }
+
 function userbetdetail($id,$parameter)
 {
     $data = Userbit::where('id', $id)->first();
@@ -112,25 +122,30 @@ function userbetdetail($id,$parameter)
     }
     return 0;
 }
-function addwallet($id, $amount, $symbol = "+")
-{
-    $wallet = wallet::where('userid', $id)->first();
-    if ($wallet) {
-        if ($symbol == "+") {
 
-            wallet::where('userid', $id)->update([
-                "amount" => wallet($id, 'num') + $amount,
-            ]);
-            return wallet($id, 'num') + $amount;
-        } elseif ($symbol == "-") {
-            wallet::where('userid', $id)->update([
-                "amount" => wallet($id, "num") - $amount,
-            ]);
-            return wallet($id, "num") - $amount;
+// In your helpers.php or wherever addwallet is defined
+function addwallet($userid, $amount, $operation = "+") {
+    try {
+        $wallet = \DB::table('wallets')->where('userid', $userid)->first();
+        
+        if ($operation == "+") {
+            $newBalance = $wallet->amount + $amount;
+        } else {
+            $newBalance = $wallet->amount - $amount;
         }
-        return wallet($id);
+        
+        $updated = \DB::table('wallets')
+            ->where('userid', $userid)
+            ->update(['amount' => $newBalance]);
+            
+        return $updated > 0; // Return true if updated
+        
+    } catch (\Exception $e) {
+        \Log::error('addwallet function failed', ['error' => $e->getMessage()]);
+        return false;
     }
 }
+
 function appvalidate($input)
 {
     if ($input == '' || $input == null || $input == 0) {
@@ -139,6 +154,7 @@ function appvalidate($input)
         return $input;
     }
 }
+
 function lastrecharge($id, $parameter)
 {
     $data = Transaction::where('userid', $id)->where('type', 'credit')->where('category', 'recharge')->orderBy('id', 'desc')->first();
@@ -147,6 +163,7 @@ function lastrecharge($id, $parameter)
     }
     return false;
 }
+
 function status($code, $type)
 {
     if ($type == 'recharge') {
@@ -171,9 +188,7 @@ function status($code, $type)
         }
     }
 }
-// function bankdetail($userid,$parameter){
-//     Bank_detail::where('userid',);
-// }
+
 function platform($id)
 {
     if ($id == 2) {
@@ -208,4 +223,120 @@ function addtransaction($userid, $platform, $transactionno, $type, $amount, $cat
         return true;
     }
     return false;
+}
+
+// ========== NEW FUNCTIONS ADDED FOR ZENOPAY WEBHOOK PROCESSING ==========
+
+/**
+ * Process ZenoPay successful payment and credit wallet
+ * This function will be called from ZenoPayService webhook
+ */
+function processZenoPaySuccess($orderId, $reference = null)
+{
+    try {
+        // Find the transaction by ZenoPay order_id
+        $transaction = Transaction::where('transactionno', $orderId)->first();
+        
+        if (!$transaction) {
+            Log::error('ZenoPay transaction not found', ['order_id' => $orderId]);
+            return false;
+        }
+        
+        // Check if transaction is already processed
+        if ($transaction->status == '1') {
+            Log::info('ZenoPay transaction already processed', ['order_id' => $orderId]);
+            return true;
+        }
+        
+        // Update transaction status to approved
+        $transaction->update([
+            'status' => '1', // 1 = approved
+            'remark' => 'Payment completed via ZenoPay' . ($reference ? " (Ref: {$reference})" : ''),
+            'updated_at' => now()
+        ]);
+        
+        Log::info('ZenoPay transaction status updated', [
+            'order_id' => $orderId,
+            'user_id' => $transaction->userid,
+            'amount' => $transaction->amount
+        ]);
+        
+        // Credit user wallet using existing addwallet function
+        $walletUpdated = addwallet($transaction->userid, $transaction->amount, '+');
+        
+        if ($walletUpdated !== false) {
+            Log::info('ZenoPay wallet credit successful', [
+                'order_id' => $orderId,
+                'user_id' => $transaction->userid,
+                'amount' => $transaction->amount,
+                'new_balance' => $walletUpdated,
+                'reference' => $reference
+            ]);
+            return true;
+        } else {
+            Log::error('ZenoPay wallet credit failed', [
+                'order_id' => $orderId,
+                'user_id' => $transaction->userid,
+                'amount' => $transaction->amount
+            ]);
+            return false;
+        }
+        
+    } catch (\Exception $e) {
+        Log::error('ZenoPay processing exception', [
+            'order_id' => $orderId,
+            'error' => $e->getMessage()
+        ]);
+        return false;
+    }
+}
+
+/**
+ * Get transaction by ZenoPay order ID
+ */
+function getTransactionByZenoOrderId($orderId)
+{
+    return Transaction::where('transactionno', $orderId)->first();
+}
+
+/**
+ * Check if wallet update is needed for ZenoPay transaction
+ */
+function needsWalletUpdate($orderId)
+{
+    $transaction = getTransactionByZenoOrderId($orderId);
+    return $transaction && $transaction->status == '0'; // Only update if status is pending (0)
+}
+
+
+
+
+
+
+/**
+ * Simple test function to verify ZenoPay integration
+ */
+function testZenoPayWalletUpdate($userId, $amount)
+{
+    try {
+        $result = addwallet($userId, $amount, '+');
+        
+        if ($result !== false) {
+            return [
+                'success' => true,
+                'message' => 'Wallet update test successful',
+                'new_balance' => $result
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Wallet update test failed'
+            ];
+        }
+    } catch (\Exception $e) {
+        return [
+            'success' => false,
+            'message' => 'Test error: ' . $e->getMessage()
+        ];
+    }
 }

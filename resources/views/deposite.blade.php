@@ -33,7 +33,7 @@
                                 <div class="grid-list" onclick="paymentGatewayDetails('10')">
                                     <button class="btn payment-btn active" data-tab="mobile_money">
                                         <img src="images/app-logo/mobile-money-tz.svg" alt="Mobile Money Tanzania" />
-                                        <div class="PaymentCard_limit">Min 1000 TSh</div>
+                                        <div class="PaymentCard_limit">Min 100 TSh</div>
                                     </button>
                                 </div>
                             </div>
